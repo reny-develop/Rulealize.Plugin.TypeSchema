@@ -9,68 +9,26 @@ The scalar vocabulary a [Rulealize](https://github.com/reny-develop/Rulealize) r
 | Namespace | `type` |
 | Reserved prefix | none |
 | Depends on | `Rulealize.Abstraction` |
+| Specification | [doc/specification.md](doc/specification.md) |
 
-Everything here is a **schema node**, not an expression. Schema nodes appear inside
-`state.schema` and nowhere else, and are never evaluated. Using one in expression position
-is a build error.
+`type.enum`, `type.int`, `type.bool`, `type.string`, `type.list`. Everything here is a
+**schema node**, not an expression: schema nodes appear inside `state.schema` and nowhere
+else, and are never evaluated. Using one in expression position is a build error.
 
 Composite types belong to whoever owns them. A grid plugin supplies the board and accepts
-any schema node for its cells; that this plugin's enumeration is what usually lands there
-is a fact about rule sets, not a dependency between the two.
+any schema node for its cells; that this plugin's enumeration is what usually lands there is
+a fact about rule sets, not a dependency between the two.
 
-## Operations
+A rule set runs from `state.initial` alone, so the schema has to earn its place. It does
+that by making three other things possible: checking a state document that arrived from
+outside, checking the initial state while the rule set is built rather than when it runs,
+and type inference eventually — exhaustiveness for `branch.match` and kind mismatch for
+`cmp` both need it, and neither exists yet.
 
-```jsonc
-{ "op": "type.enum",   "values": ["<value>", …], "nullable": <bool> }
-{ "op": "type.int",    "min": <int>, "max": <int>, "nullable": <bool> }
-{ "op": "type.bool",   "nullable": <bool> }
-{ "op": "type.string", "minLength": <int>, "maxLength": <int>, "nullable": <bool> }
-```
-
-Everything but `values` is optional. `nullable` defaults to false and is shared by all four
-— a modifier rather than a separate type per scalar, so that the pattern a board cell needs
-is one line:
-
-```jsonc
-{ "op": "type.enum", "values": ["black", "white"], "nullable": true }
-```
-
-## What the schema is for
-
-A rule set runs from `state.initial` alone. The schema earns its place by making three
-other things possible:
-
-1. **Validating state that came from outside.** `ApplyToStateAsync` accepts a document
-   written by hand or by another system. Without a schema there is nothing to check it
-   against.
-2. **Validating the initial state**, when the rule set is built rather than when it runs.
-3. **Type inference, eventually.** Exhaustiveness checking for `branch.match` and
-   kind-mismatch detection for `cmp` both need it. Neither exists yet.
-
-Failures are reported by path, value and constraint, all of them, rather than stopping at
-the first.
-
-## Null, and why an Othello cell is nullable
-
-An empty square is null. Adding a third enumeration member for "empty" was considered and
-rejected.
-
-`grid.at` answers null for a coordinate off the board, whatever the cell type says. With a
-distinct empty member, "no stone here" and "there is no here" would stop agreeing, and the
-flip rule — which walks a ray until it stops finding opposing stones, and reads one square
-past the end — would need an explicit bounds check to tell them apart. Collapsing both into
-null is what keeps that rule to a single comparison.
-
-## Redundancy with the transition rules
-
-Othello's pass counter is declared `{ "op": "type.int", "min": 0, "max": 2 }`, and its
-terminal condition also says two passes ends the game. The same number, twice.
-
-They are not the same statement. The terminal condition is a rule about transitions: at
-two, stop. The schema is a claim about the state space: a state with three does not exist.
-The second is what catches a state document arriving from outside with `"passes": 5`.
-
-Nothing currently checks that the two agree with each other.
+`nullable` is a shared modifier rather than a variant per scalar, because the shape a board
+cell needs — `black`, `white`, or empty — then fits on one line. An empty square being null
+rather than a third enumeration member is a deliberate decision the specification argues
+for; it is what keeps Reversi's flip rule to a single comparison.
 
 ## Building
 
