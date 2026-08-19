@@ -16,7 +16,7 @@ namespace Rulealize.Plugin.TypeSchema
     /// wants <c>type.int</c>.
     /// </para>
     /// <para>
-    /// An Othello cell is written as this enumeration with <c>nullable</c> set, so that an
+    /// A Reversi cell is written as this enumeration with <c>nullable</c> set, so that an
     /// empty square is null. Adding a third member for "empty" was considered and rejected:
     /// a coordinate off the board reads as null whatever the cell type says, and with a
     /// distinct empty member the two would stop agreeing. Collapsing "no stone here" and

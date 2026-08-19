@@ -60,8 +60,9 @@ effect node.
 ```
 
 [Records](https://github.com/reny-develop/Rulealize.Plugin.Record/blob/main/doc/specification.md), by contrast, had no existing vocabulary whatsoever, and became a
-plugin of their own. **The asymmetry is real and has a reason**
-(→ [collections](https://github.com/reny-develop/Rulealize/blob/main/doc/collections.md)).
+plugin of their own. **The asymmetry is real and has a reason**: a list needed a schema node
+and nothing else, while a record needed a schema, a way to read and a way to write — all
+three kinds of node, which is a plugin's worth rather than a schema vocabulary's.
 
 ### The bound is not decoration
 
@@ -117,7 +118,7 @@ A finite set of `Text` values.
 ```jsonc
 {
   "op": "type.enum",
-  "values": ["<value>", ...],   // static
+  "values": ["<value>", …],     // static
   "nullable": <boolean>         // optional
 }
 ```
@@ -258,13 +259,14 @@ violation rather than the first.
   admitting 99, with a test pinning the overrun as correct behaviour, which is how long a
   disagreement like this survives when nothing looks.
 - ~~**`type.record` / structured schemas**~~ — resolved. Shogi's hand demanded it and it
-  became [`rec.of` / `rec.map`](https://github.com/reny-develop/Rulealize.Plugin.Record/blob/main/doc/specification.md). Why the namespace is not `type` is in
-  [collections](https://github.com/reny-develop/Rulealize/blob/main/doc/collections.md).
+  became [`rec.of` / `rec.map`](https://github.com/reny-develop/Rulealize.Plugin.Record/blob/main/doc/specification.md). The namespace is not `type` because records
+  need expression and effect nodes as well as a schema, and this plugin provides schema
+  nodes only.
 - **Inference from schemas into expression types is not being built.** It would turn three
   run time faults into static ones — `branch.match`'s exhaustiveness, `cmp`'s kind
-  mismatches, and `tuple.at`'s index bound — and it is the thing four other open questions
+  mismatches, and `tuple.at`'s index bound — and it is the thing several other open questions
   across these specifications are waiting on. It is also the largest single piece of work
   the design has left. The condition for starting is the DSL settling down: **the vocabulary
-  went 10 → 11 → 12 plugins over three rule sets**, and building inference over a set of
-  node shapes that is still growing means rebuilding it. When a rule set gets written that
+  has still been gaining plugins as rule sets are written**, and building inference over a
+  set of node shapes that is still growing means rebuilding it. When a rule set gets written that
   needs no new vocabulary, that is the signal.
