@@ -17,6 +17,10 @@ namespace Rulealize.Plugin.TypeSchema
     /// </remarks>
     internal sealed class IntegerSchemaNode(int? minimum, int? maximum, bool nullable) : ScalarSchemaNode(nullable)
     {
+        public override RecordValue Describe() => Bounds.Of(
+            ("min", Bounds.Number(minimum)),
+            ("max", Bounds.Number(maximum)));
+
         public static SchemaNode Build(INodeBuildContext context)
         {
             int? minimum = context.TryGetProperty("min", out _) ? context.RequireInt32("min") : null;

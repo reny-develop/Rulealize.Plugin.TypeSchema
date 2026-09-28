@@ -9,6 +9,32 @@ using Rulealize.Abstraction.Value;
 
 namespace Rulealize.Plugin.TypeSchema
 {
+    /// <summary>Builds the record a schema node hands a host that has to ask for one of its values.</summary>
+    /// <remarks>
+    /// The keys are the ones the document writes — <c>maxLength</c>, <c>min</c>, <c>values</c> —
+    /// because a host reads the record against the <c>op</c> it already knows the node by, and a
+    /// second set of names for one constraint would be a second thing to keep in step. A bound
+    /// nobody declared is left out rather than written as null: absent means unbounded.
+    /// </remarks>
+    internal static class Bounds
+    {
+        public static RecordValue Of(params (string Key, RuleValue? Value)[] stated)
+        {
+            Dictionary<string, RuleValue> fields = new(StringComparer.Ordinal);
+            foreach ((string key, RuleValue? value) in stated)
+            {
+                if (value is not null)
+                {
+                    fields[key] = value;
+                }
+            }
+
+            return RuleValue.Record(fields);
+        }
+
+        public static RuleValue? Number(int? value) => value is int number ? RuleValue.Number(number) : null;
+    }
+
     /// <summary>A boolean.</summary>
     internal sealed class BooleanSchemaNode(bool nullable) : ScalarSchemaNode(nullable)
     {
@@ -64,6 +90,10 @@ namespace Rulealize.Plugin.TypeSchema
 
             return new StringSchemaNode(minimumLength, maximumLength, context.OptionalBoolean("nullable", false));
         }
+
+        public override RecordValue Describe() => Bounds.Of(
+            ("minLength", Bounds.Number(minimumLength)),
+            ("maxLength", Bounds.Number(maximumLength)));
 
         protected override void ValidateValue(RuleValue value, ISchemaValidationSink sink)
         {

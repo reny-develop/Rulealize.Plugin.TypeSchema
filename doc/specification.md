@@ -4,7 +4,7 @@
 | --- | --- |
 | Identifier | `Rulealize.Plugin.TypeSchema` |
 | Namespace | `type` |
-| Version | `1.1.1` |
+| Version | `1.2.0` |
 | Reserved prefix | none |
 | Depends on | [the value model](https://github.com/reny-develop/Rulealize.Abstraction/blob/main/doc/value-model.md), and nothing else |
 | Notation | [how a plugin specification is written](https://github.com/reny-develop/Rulealize.Abstraction/blob/main/doc/specification-notation.md) |
@@ -27,6 +27,13 @@ TypeSchema, and `grid.board` takes "some schema node" for its `cell` without kno
 | `type.bool` | schema | — |
 | `type.string` | schema | — |
 | `type.list` | schema | — (added in 1.1) |
+
+Every node here answers `SchemaNode.Describe` with the bounds it was declared with, under the
+keys the document writes them as — `minLength` and `maxLength`, `min` and `max`, `values`.
+A bound nobody declared is left out rather than written as null, so absent reads as unbounded.
+This is for the second position a schema node stands in, a parameter left `open`: a host asking
+somebody for such a value needs the same bounds, and without them it would restate them.
+(added in 1.2)
 
 ## `type.list`
 

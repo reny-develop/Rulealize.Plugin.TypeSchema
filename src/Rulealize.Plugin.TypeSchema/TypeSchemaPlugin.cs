@@ -30,7 +30,7 @@ namespace Rulealize.Plugin.TypeSchema
     {
         /// <inheritdoc />
         public PluginManifest Manifest { get; } =
-            new("Rulealize.Plugin.TypeSchema", new Version(1, 1, 1), "type");
+            new("Rulealize.Plugin.TypeSchema", new Version(1, 2, 0), "type");
 
         /// <inheritdoc />
         public void Register(IPluginRegistry registry)

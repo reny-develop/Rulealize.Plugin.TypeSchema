@@ -26,6 +26,9 @@ namespace Rulealize.Plugin.TypeSchema
     /// </remarks>
     internal sealed class EnumSchemaNode(ImmutableArray<string> values, bool nullable) : ScalarSchemaNode(nullable)
     {
+        public override RecordValue Describe() => Bounds.Of(
+            ("values", RuleValue.Sequence([.. values.Select(RuleValue.Text)])));
+
         public static SchemaNode Build(INodeBuildContext context)
         {
             ImmutableArray<string> values = context.RequireStringArray("values");
