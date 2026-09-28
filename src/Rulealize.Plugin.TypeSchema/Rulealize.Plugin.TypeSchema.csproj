@@ -14,7 +14,7 @@
 
   <PropertyGroup>
     <PackageId>Rulealize.Plugin.TypeSchema</PackageId>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Authors>Reny</Authors>
     <Description>Schema vocabulary for a Rulealize rule set's state.schema: type.enum, type.int, type.bool, type.string and type.list.</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Rulealize.Abstraction" Version="0.4.0" />
+    <PackageReference Include="Rulealize.Abstraction" Version="0.5.0" />
   </ItemGroup>
 
 </Project>

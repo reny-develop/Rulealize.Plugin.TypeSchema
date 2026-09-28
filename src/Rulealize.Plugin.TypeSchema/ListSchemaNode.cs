@@ -40,6 +40,10 @@ namespace Rulealize.Plugin.TypeSchema
         /// </remarks>
         public override bool IsNullable => false;
 
+        public override RecordValue Describe() => Bounds.Of(
+            ("minLength", Bounds.Number(minLength)),
+            ("maxLength", Bounds.Number(maxLength)));
+
         public static SchemaNode Build(INodeBuildContext context)
         {
             ArgumentNullException.ThrowIfNull(context);
