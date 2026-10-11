@@ -4,7 +4,7 @@
 | --- | --- |
 | Identifier | `Rulealize.Plugin.TypeSchema` |
 | Namespace | `type` |
-| Version | `1.2.0` |
+| Version | `1.3.0` |
 | Reserved prefix | none |
 | Depends on | [the value model](https://github.com/reny-develop/Rulealize.Abstraction/blob/main/doc/value-model.md), and nothing else |
 | Notation | [how a plugin specification is written](https://github.com/reny-develop/Rulealize.Abstraction/blob/main/doc/specification-notation.md) |
@@ -24,12 +24,13 @@ TypeSchema, and `grid.board` takes "some schema node" for its `cell` without kno
 | --- | --- | --- |
 | `type.enum` | schema | ○ `board.cell`, `turn` |
 | `type.int` | schema | ○ `passes` |
+| `type.decimal` | schema | — (added in 1.3) |
 | `type.bool` | schema | — |
 | `type.string` | schema | — |
 | `type.list` | schema | — (added in 1.1) |
 
 Every node here answers `SchemaNode.Describe` with the bounds it was declared with, under the
-keys the document writes them as — `minLength` and `maxLength`, `min` and `max`, `values`.
+keys the document writes them as — `minLength` and `maxLength`, `min` and `max`, `scale`, `values`.
 A bound nobody declared is left out rather than written as null, so absent reads as unbounded.
 This is for the second position a schema node stands in, a parameter left `open`: a host asking
 somebody for such a value needs the same bounds, and without them it would restate them.
@@ -195,6 +196,48 @@ ends it — while this is a **constraint on the state space**: no state with 3 e
 
 The redundancy earns its keep by catching an invalid state from outside, such as
 `passes: 5`. What it does not do is guarantee the two agree with each other — see below.
+
+---
+
+## `type.decimal`
+
+A number with at most a given number of decimal places: an amount of money, a rate. (added in 1.3)
+
+### Form
+
+```jsonc
+{
+  "op": "type.decimal",
+  "scale": <integer>,     // optional, static: the most decimal places, 0 to 28
+  "min": <number>,        // optional, static
+  "max": <number>,        // optional, static
+  "nullable": <boolean>   // optional
+}
+```
+
+### What it accepts
+
+A `Number` with no more than `scale` decimal places, between `min` and `max` inclusive. Any of
+the three may be omitted, and an omitted one is unbounded. `12.50` and `12.5` are the same
+number; `12.505` with `scale: 2` is refused.
+
+`min` and `max` are numbers rather than integers, and are held to `scale` themselves: a bound
+with more decimal places than any value may have is a static error, since no value could equal it.
+
+### Example
+
+```jsonc
+"amount": { "op": "type.decimal", "scale": 2, "min": 0, "max": 100000 }
+```
+
+### Refused, not rounded
+
+A value with too many decimal places is a violation, never rounded to fit. Which way to round —
+half up, half to even, down — is a rule of the domain, and a rule belongs in an expression a
+reader can see rather than in a schema that changes the value it was handed.
+
+Like `type.int`, this is a constraint over the value model's one `Number`, not a kind of its
+own: `math.*` and `cmp.*` read a `type.decimal` field exactly as they read any number.
 
 ---
 

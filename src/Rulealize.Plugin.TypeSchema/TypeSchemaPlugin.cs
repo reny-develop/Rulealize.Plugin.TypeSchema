@@ -30,7 +30,7 @@ namespace Rulealize.Plugin.TypeSchema
     {
         /// <inheritdoc />
         public PluginManifest Manifest { get; } =
-            new("Rulealize.Plugin.TypeSchema", new Version(1, 2, 0), "type");
+            new("Rulealize.Plugin.TypeSchema", new Version(1, 3, 0), "type");
 
         /// <inheritdoc />
         public void Register(IPluginRegistry registry)
@@ -42,6 +42,7 @@ namespace Rulealize.Plugin.TypeSchema
             registry.AddSchema("bool", BooleanSchemaNode.Build);
             registry.AddSchema("string", StringSchemaNode.Build);
             registry.AddSchema("list", ListSchemaNode.Build);
+            registry.AddSchema("decimal", DecimalSchemaNode.Build);
         }
     }
 }

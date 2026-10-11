@@ -11,8 +11,8 @@ The scalar vocabulary a [Rulealize](https://github.com/reny-develop/Rulealize) r
 | Depends on | `Rulealize.Abstraction` |
 | Specification | [doc/specification.md](doc/specification.md) |
 
-`type.enum`, `type.int`, `type.bool`, `type.string`, `type.list`. Everything here is a
-**schema node**, not an expression: schema nodes appear inside `state.schema` and nowhere
+`type.enum`, `type.int`, `type.decimal`, `type.bool`, `type.string`, `type.list`. Everything here
+is a **schema node**, not an expression: schema nodes appear inside `state.schema` and nowhere
 else, and are never evaluated. Using one in expression position is a build error.
 
 Composite types belong to whoever owns them. A grid plugin supplies the board and accepts
@@ -34,6 +34,11 @@ for; it is what keeps Reversi's flip rule to a single comparison.
 
 `dotnet build`. `Rulealize.Abstraction` restores from nuget.org like any other package, so
 this repository builds on its own.
+
+`dotnet test` runs the vocabulary's own tests, in `test/`: each schema node met as a host
+meets it, in a rule set the Rulealize runtime builds and moves. The runtime and the other
+vocabularies come from nuget.org; the plugin under test is this repository's, handed to the
+runtime as an instance.
 
 ## License
 

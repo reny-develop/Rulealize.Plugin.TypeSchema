@@ -33,6 +33,8 @@ namespace Rulealize.Plugin.TypeSchema
         }
 
         public static RuleValue? Number(int? value) => value is int number ? RuleValue.Number(number) : null;
+
+        public static RuleValue? Number(decimal? value) => value is decimal number ? RuleValue.Number(number) : null;
     }
 
     /// <summary>A boolean.</summary>

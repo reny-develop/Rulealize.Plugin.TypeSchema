@@ -1,6 +1,10 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/test/">
+    <Project Path="test/Rulealize.Plugin.TypeSchema.Tests/Rulealize.Plugin.TypeSchema.Tests.csproj" />
   </Folder>
   <Project Path="src/Rulealize.Plugin.TypeSchema/Rulealize.Plugin.TypeSchema.csproj" />
 </Solution>
